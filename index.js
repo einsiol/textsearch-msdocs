@@ -1,5 +1,9 @@
-var textract = require('textract');
-var WordExtractor = require("word-extractor");
+const textract = require('textract');
+const WordExtractor = require("word-extractor");
+const path = require('path');
+const fs = require('fs');
+
+console.log(__dirname)
 
 const searchErrorFile = (file) => {
   var extractor = new WordExtractor();
@@ -28,7 +32,7 @@ const serachFile = (file) => {
 
 }
 
-var path = require('path'), fs=require('fs');
+
 
 function fromDir(startPath,filter){
 
@@ -52,4 +56,4 @@ function fromDir(startPath,filter){
     };
 };
 
-fromDir('./files','.doc');
+// fromDir('./files','.doc');
