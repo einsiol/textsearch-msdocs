@@ -3,57 +3,79 @@ const WordExtractor = require("word-extractor");
 const path = require('path');
 const fs = require('fs');
 
-console.log(__dirname)
-
-const searchErrorFile = (file) => {
-  var extractor = new WordExtractor();
-  var extracted = extractor.extract(file);
-  extracted.then(function(doc) {
-    var body = doc.getBody()
-    if(body.indexOf('Vignemont') >= 0 || body.indexOf('vignemont')  >= 0) {
-      console.log(file);
-    }
-  })
-  .catch((err) => console.log('Could not read this file >>>', file));
-
-}
-
-const serachFile = (file) => {
-    textract.fromFileWithPath(file, (error, text) => {
-      if(error) {
-        // console.log('PROBLEM', file)
-        searchErrorFile(file)
-      } else {
-        if(text.indexOf('Vignemont') >= 0 || text.indexOf('vignemont')  >= 0) {
-          console.log(file);
-        }
-      }
+function promisify(func) {
+  return (...args) =>
+    new Promise((resolve, reject) => {
+      const callback = (err, data) => err ? reject(err) : resolve(data)
+      
+      func.apply(this, [...args, callback])
     })
+}
+
+const word = 'marketing'
+
+const selector = (text) => (text.indexOf(word) >= 0 || text.indexOf(word)  >= 0)
+
+const searchWithWordExtractor = async (file) => {
+  var extractor = new WordExtractor();
+  var extracted = await extractor.extract(file);
+  try {
+      const body = extracted.getBody()
+      if(selector(body)) {
+        return file
+      }
+  }
+  catch (error) {
+    console.log('There was an error in extractor')
+    return error
+  }
 
 }
 
+const searchFile = async (file) => {
+  let foundFile = null
 
+  const handleResults = (text) => {
+    foundFile = selector(text) ? file : null
+  }
 
-function fromDir(startPath,filter){
+  const fromFileWithPath = promisify(textract.fromFileWithPath)
 
-    //console.log('Starting from dir '+startPath+'/');
+  const result = await fromFileWithPath(file)
 
-    if (!fs.existsSync(startPath)){
-        console.log("no dir ",startPath);
-        return;
-    }
+  try {
+    handleResults(result)
+  } 
+  catch (error) {
+    console.log('There was an error')
+    searchWithWordExtractor(file)
+  }
 
-    var files=fs.readdirSync(startPath);
-    for(var i=0;i<files.length;i++){
-        var filename=path.join(startPath,files[i]);
-        var stat = fs.lstatSync(filename);
-        if (stat.isDirectory()){
-            fromDir(filename,filter); //recurse
-        }
-        else if (filename.indexOf(filter)>=0) {
-            serachFile('./' + filename)
-        };
-    };
+  return foundFile;
+}
+
+const findFiles = ({path: startPath, filter}) => {
+
+  if (!fs.existsSync(startPath)){
+      throw `Directory ${startPath} not found`
+  }
+
+  const files = fs.readdirSync(startPath)
+
+  files.forEach(file => {
+      const filename = path.join(startPath, file)
+      const stat = fs.lstatSync(filename)
+
+      if (stat.isDirectory()){
+          fromDir(filename, filter); // recurs
+      }
+      else if (filename.indexOf(filter)>=0) {
+          searchFile('./' + filename)
+            .then(found => console.log(found))
+            .catch(error => console.log('Final error'))
+      }
+
+  });
 };
 
-// fromDir('./files','.doc');
+findFiles({path: './files', filter: '.doc'});
