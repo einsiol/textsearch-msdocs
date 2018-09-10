@@ -2,15 +2,9 @@ const textract = require('textract');
 const WordExtractor = require("word-extractor");
 const path = require('path');
 const fs = require('fs');
+const {promisify} = require('./helpers')
 
-function promisify(func) {
-  return (...args) =>
-    new Promise((resolve, reject) => {
-      const callback = (err, data) => err ? reject(err) : resolve(data)
-      
-      func.apply(this, [...args, callback])
-    })
-}
+const fromFileWithPath = promisify(textract.fromFileWithPath)
 
 const word = 'marketing'
 
@@ -33,25 +27,14 @@ const searchWithWordExtractor = async (file) => {
 }
 
 const searchFile = async (file) => {
-  let foundFile = null
-
-  const handleResults = (text) => {
-    foundFile = selector(text) ? file : null
-  }
-
-  const fromFileWithPath = promisify(textract.fromFileWithPath)
-
-  const result = await fromFileWithPath(file)
-
   try {
-    handleResults(result)
+    const result = await fromFileWithPath(file)
+
+    return selector(result) ? file : null
   } 
   catch (error) {
-    console.log('There was an error')
-    searchWithWordExtractor(file)
+    return searchWithWordExtractor(file)
   }
-
-  return foundFile;
 }
 
 const findFiles = ({path: startPath, filter}) => {
