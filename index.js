@@ -1,40 +1,39 @@
+const util = require('util');
+const pathTool = require('path');
+const fs = require('fs');
 const textract = require('textract');
 const WordExtractor = require("word-extractor");
-const path = require('path');
-const fs = require('fs');
 const {promisify} = require('./helpers')
 
 const fromFileWithPath = promisify(textract.fromFileWithPath)
+const readdir = util.promisify(fs.readdir)
 
 const word = 'marketing'
 let fileList = []
 
 const selector = (text) => (text.indexOf(word) >= 0 || text.indexOf(word)  >= 0)
 
-const searchWithWordExtractor = (file) => {
+const searchWithWordExtractor = async (file) => {
   var extractor = new WordExtractor();
-  var extracted = extractor.extract(file);
+  var extracted = await extractor.extract(file);
   try {
-      const body = extracted.getBody()
-      if(selector(body)) {
-        return file
-      } 
-      else {
-        return null
-      }
-      
+    const body = extracted.pieces[0].text
+    if(selector(body)) {
+      return file
+    } 
+    else {
+      return null
+    }  
   }
   catch (error) {
-    console.log('There was an error in extractor')
+    console.log('There was an error in extractor', error)
     return error
   }
-
 }
 
-const searchFile = (file) => {
+const searchFile = async (file) => {
   try {
-    const result = fromFileWithPath(file)
-
+    const result = await fromFileWithPath(file)
     return selector(result) ? file : null
   } 
   catch (error) {
@@ -42,38 +41,34 @@ const searchFile = (file) => {
   }
 }
 
-const iterateThroughFiles = (file, filter, startPath, array) => {
-  const filename = path.join(startPath, file)
-  const stat = fs.lstatSync(filename)
-  try {
+const iterateThroughFiles = async ({files, filter, path, fileList}) => {
+  
+  for (let i = 0; files.length >= i; i++) {
+    const file = files[i]
+    const filename = pathTool.join(path, file)
+    const stat = fs.lstatSync(filename)
+    
     if (stat.isDirectory()){
-      findFiles(filename, filter); // recurs
-      return
+      await findFiles(filename, filter); // recurs
     }
-    if (filename.indexOf(filter)>=0) {
-      const found = searchFile('./' + filename)
-      array.push(found)
-      return
+    else if (filename.indexOf(filter)>=0) {
+      const found = await searchFile('./' + filename)
+      fileList.push(found)
     }
-  }
-  catch (error) {
-    return error
-  }
 
+  }
 }
 
-async function findFiles({path: startPath, filter, fileList}) {
-  if (!fs.existsSync(startPath)){
-      throw `Directory ${startPath} not found`
+async function findFiles({path, filter, fileList}) {
+  if (!fs.existsSync(path)){
+      throw `Directory ${path} not found`
   }
 
-  const files = fs.readdirSync(startPath)
-
-  files.forEach(file => iterateThroughFiles(file, filter, startPath, fileList));
-
-  console.log(found)
-  return found
+  const files = await readdir(path);
+  await iterateThroughFiles({files, filter, path, fileList})
+  
+  return
 };
 
-const files = findFiles({path: './files', filter: '.doc', fileList});
-console.log('files', files);
+const files = findFiles({path: './files', filter: '.doc', fileList}).then(() => console.log('done')).catch(error => console.log('ERROR DONE', error))
+// console.log('files', files);
