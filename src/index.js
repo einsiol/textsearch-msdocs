@@ -68,32 +68,43 @@ const iterateThroughFiles = async ({searchTerms, files, filter, path, fileList, 
 }
 
 const findFiles = async function findFiles({searchTerms, path, filter, fileList}) {
-  if (!fs.existsSync(path)){
-    throw `Directory ${path} not found`
-  }
+  try {
+    if (!fs.existsSync(path)){
+      throw `Directory ${path} not found`
+    }
 
-  const files = await readdir(path)
-  await iterateThroughFiles({
-    files, 
-    filter, 
-    path, 
-    fileList, 
-    callBack: findFiles,
-    searchTerms
-  })
-  
-  return
+    const files = await readdir(path)
+    await iterateThroughFiles({
+      files, 
+      filter, 
+      path, 
+      fileList, 
+      callBack: findFiles,
+      searchTerms
+    })
+    
+    return true
+  }
+  catch (error) {
+    return error
+  }
 }
 
-const runProgram = ({searchTerms, filter, path}) => {
-  const fileList = []
+const runProgram = async ({searchTerms, filter, path}) => {
+  try {
+    const fileList = []
 
-  findFiles({searchTerms, path, filter, fileList})
-    .then(() => console.log('done', fileList))
-    .catch(error => console.log('ERROR DONE', error))
+    await findFiles({searchTerms, path, filter, fileList})
+    return fileList
+
+  }
+  catch (error) {
+    return error
+  }
 }
 
 runProgram({searchTerms, path: './files', filter: '.doc'})
+  .then((result) => console.log(result))
 
 /* findFiles({path: './files', filter: '.doc', fileList})
   .then(() => console.log('done', fileList))
