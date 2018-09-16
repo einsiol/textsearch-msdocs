@@ -1,9 +1,22 @@
 module.exports = {
-  "extends": "airbnb",
-  env: {
-    node: true
+  "env": {
+    "node": true,
+    "commonjs": true,
   },
-  rules: {
-    'indent': ['error', 2, { 'SwitchCase': 1 }],
+  "parser": "babel-eslint",
+  "extends": "eslint:recommended",
+  "rules": {
+    "indent": [
+      "error",
+      "tab"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "never"
+    ]
   }
-};
+}
