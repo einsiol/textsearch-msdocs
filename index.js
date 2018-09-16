@@ -1,59 +1,74 @@
+const util = require('util');
+const pathTool = require('path');
+const fs = require('fs');
 const textract = require('textract');
 const WordExtractor = require("word-extractor");
-const path = require('path');
-const fs = require('fs');
 
-console.log(__dirname)
+const fromFileWithPath = util.promisify(textract.fromFileWithPath)
+const readdir = util.promisify(fs.readdir)
 
-const searchErrorFile = (file) => {
+const word = 'marketing'
+let fileList = []
+
+const selector = (text) => (text.indexOf(word) >= 0 || text.indexOf(word)  >= 0)
+
+const searchWithWordExtractor = async (file) => {
   var extractor = new WordExtractor();
-  var extracted = extractor.extract(file);
-  extracted.then(function(doc) {
-    var body = doc.getBody()
-    if(body.indexOf('Vignemont') >= 0 || body.indexOf('vignemont')  >= 0) {
-      console.log(file);
-    }
-  })
-  .catch((err) => console.log('Could not read this file >>>', file));
-
+  var extracted = await extractor.extract(file);
+  try {
+    const body = extracted.pieces[0].text
+    if(selector(body)) {
+      return file
+    } 
+    else {
+      return null
+    }  
+  }
+  catch (error) {
+    console.log('There was an error in extractor', error)
+    return error
+  }
 }
 
-const serachFile = (file) => {
-    textract.fromFileWithPath(file, (error, text) => {
-      if(error) {
-        // console.log('PROBLEM', file)
-        searchErrorFile(file)
-      } else {
-        if(text.indexOf('Vignemont') >= 0 || text.indexOf('vignemont')  >= 0) {
-          console.log(file);
-        }
+const searchFile = async (file) => {
+  try {
+    const result = await fromFileWithPath(file)
+    return selector(result) ? file : null
+  } 
+  catch (error) {
+    return searchWithWordExtractor(file)
+  }
+}
+
+const iterateThroughFiles = async ({files, filter, path = '', fileList}) => {
+  
+  for (let i = 0; files.length > i; i++) {
+    const file = files[i]
+    const filename = pathTool.join(path, file)
+    const stat = fs.lstatSync(filename)
+    
+    if (stat.isDirectory()){
+      await findFiles(filename, filter); // recurs
+    }
+    else if (filename.indexOf(filter)>=0) {
+      const found = await searchFile('./' + filename)
+      if (found) {
+        fileList.push(found)
       }
-    })
-
-}
-
-
-
-function fromDir(startPath,filter){
-
-    //console.log('Starting from dir '+startPath+'/');
-
-    if (!fs.existsSync(startPath)){
-        console.log("no dir ",startPath);
-        return;
     }
 
-    var files=fs.readdirSync(startPath);
-    for(var i=0;i<files.length;i++){
-        var filename=path.join(startPath,files[i]);
-        var stat = fs.lstatSync(filename);
-        if (stat.isDirectory()){
-            fromDir(filename,filter); //recurse
-        }
-        else if (filename.indexOf(filter)>=0) {
-            serachFile('./' + filename)
-        };
-    };
+  }
+}
+
+async function findFiles({path, filter, fileList}) {
+  if (!fs.existsSync(path)){
+      throw `Directory ${path} not found`
+  }
+
+  const files = await readdir(path);
+  await iterateThroughFiles({files, filter, path, fileList})
+  
+  return
 };
 
-// fromDir('./files','.doc');
+findFiles({path: './files', filter: '.doc', fileList}).then(() => console.log('done', fileList)).catch(error => console.log('ERROR DONE', error))
