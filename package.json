@@ -10,8 +10,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "docx4js": "^3.1.13",
+    "minimist": "^1.2.0",
     "textract": "^2.4.0",
-    "var": "^0.3.2",
     "word-extractor": "^0.1.4"
   },
   "devDependencies": {
