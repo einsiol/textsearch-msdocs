@@ -5,7 +5,7 @@ const textract = require('textract');
 const WordExtractor = require("word-extractor");
 const {promisify} = require('./helpers')
 
-const fromFileWithPath = promisify(textract.fromFileWithPath)
+const fromFileWithPath = util.promisify(textract.fromFileWithPath)
 const readdir = util.promisify(fs.readdir)
 
 const word = 'marketing'
@@ -41,9 +41,9 @@ const searchFile = async (file) => {
   }
 }
 
-const iterateThroughFiles = async ({files, filter, path, fileList}) => {
+const iterateThroughFiles = async ({files, filter, path = '', fileList}) => {
   
-  for (let i = 0; files.length >= i; i++) {
+  for (let i = 0; files.length > i; i++) {
     const file = files[i]
     const filename = pathTool.join(path, file)
     const stat = fs.lstatSync(filename)
@@ -53,7 +53,9 @@ const iterateThroughFiles = async ({files, filter, path, fileList}) => {
     }
     else if (filename.indexOf(filter)>=0) {
       const found = await searchFile('./' + filename)
-      fileList.push(found)
+      if (found) {
+        fileList.push(found)
+      }
     }
 
   }
@@ -70,5 +72,4 @@ async function findFiles({path, filter, fileList}) {
   return
 };
 
-const files = findFiles({path: './files', filter: '.doc', fileList}).then(() => console.log('done')).catch(error => console.log('ERROR DONE', error))
-// console.log('files', files);
+findFiles({path: './files', filter: '.doc', fileList}).then(() => console.log('done', fileList)).catch(error => console.log('ERROR DONE', error))
