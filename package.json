@@ -4,7 +4,7 @@
   "description": "Search and find text in multiple Microsoft Word documents",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "babel src -d build && node build/index.js",
     "build": "babel src -d build"
   },
   "author": "Einar Olafsson",
