@@ -3,10 +3,12 @@ import pathTool from 'path'
 import fs from 'fs'
 import textract from 'textract'
 import WordExtractor from 'word-extractor'
+import minimist from 'minimist'
 
-var argv = require('minimist')(process.argv.slice(2))
 const fromFileWithPath = util.promisify(textract.fromFileWithPath)
 const readdir = util.promisify(fs.readdir)
+
+var argv = minimist(process.argv.slice(2))
 
 const searchTerms = argv._
 
