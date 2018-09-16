@@ -3,7 +3,6 @@ const pathTool = require('path');
 const fs = require('fs');
 const textract = require('textract');
 const WordExtractor = require("word-extractor");
-const {promisify} = require('./helpers')
 
 const fromFileWithPath = util.promisify(textract.fromFileWithPath)
 const readdir = util.promisify(fs.readdir)
