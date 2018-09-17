@@ -107,7 +107,3 @@ const runProgram = async ({searchTerms, filter, path}) => {
 
 runProgram({searchTerms, path: './files', filter: '.doc'})
   .then((result) => console.log(result))
-
-/* findFiles({path: './files', filter: '.doc', fileList})
-  .then(() => console.log('done', fileList))
-  .catch(error => console.log('ERROR DONE', error)) */
