@@ -10,7 +10,7 @@ const readdir = util.promisify(fs.readdir)
 
 var argv = minimist(process.argv.slice(2))
 
-const searchTerms = argv._
+const {_: searchTerms, dir = './'} = argv
 
 const selector = ({text, searchTerms}) => {
   for (let i = 0; searchTerms.length > i; i++) {
@@ -105,5 +105,5 @@ const runProgram = async ({searchTerms, filter, path}) => {
   }
 }
 
-runProgram({searchTerms, path: './files', filter: '.doc'})
+runProgram({searchTerms, path: dir, filter: '.doc'})
   .then((result) => console.log(result))
