@@ -1,6 +1,6 @@
 {
   "name": "search-word-docs",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Search and find text in multiple Microsoft Word documents",
   "main": "index.js",
   "scripts": {
@@ -23,9 +23,11 @@
     "@babel/preset-env": "^7.0.0",
     "babel-minify": "^0.4.3",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-preset-flow": "^6.23.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.1"
+    "eslint-plugin-react": "^7.11.1",
+    "flow-bin": "^0.81.0"
   }
 }
