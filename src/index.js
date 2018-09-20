@@ -1,5 +1,3 @@
-
-
 import minimist from 'minimist'
 import findFiles from './findFiles/find-files'
 
