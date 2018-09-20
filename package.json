@@ -35,6 +35,9 @@
   "ava": {
     "require": [
       "@babel/register"
+    ],
+    "files": [
+			"src/**/*.test.js"
     ]
   }
 }
