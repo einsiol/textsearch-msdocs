@@ -25,7 +25,17 @@ module.exports = {
     'no-var': 'error',
     'one-var': 'off',
     'no-console': 'warn',
+    'no-process-env': 'off',
+    'object-property-newline': 'off',
+    'dot-location': 'off',
+    'arrow-parens': ['error', 'as-needed', { requireForBlockBody: true }],
+    'quote-props': 'off',
+    "sort-keys": ["error", "asc", {"caseSensitive": true, "natural": true}],
+    'sort-imports': 'off',
+
+    // https://github.com/selaux/eslint-plugin-filenames#rules
     'filenames/match-exported': ['error', 'kebab'],
-    'filenames/no-index': 'off',
+    'filenames/no-index': 'off'
+    
   }
 }
