@@ -1,7 +1,7 @@
 import minimist from 'minimist'
 import findFiles from './findFiles/find-files'
 
-const argv = minimist(process.argv.slice(2))
+const argv = minimist(JSON.parse(process.env.npm_config_argv).original)
 
 const {_: searchTerms, dir = './'} = argv
 
