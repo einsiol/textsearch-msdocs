@@ -19,7 +19,4 @@ test('Able to read .doc format', async t => {
 
     t.pass()
   }
-
-  
-
 })

@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "babel src -d build && node build/index.js",
-    "build": "babel src -d build"
+    "build": "babel src -d build",
+    "test": "npx ava",
+    "lint": "eslint . --cache"
   },
   "author": "Einar Olafsson",
   "license": "GPL-3.0",
@@ -26,7 +28,9 @@
     "babel-minify": "^0.4.3",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-flow": "^6.23.0",
+    "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-ava": "^5.1.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
@@ -37,7 +41,7 @@
       "@babel/register"
     ],
     "files": [
-			"src/**/*.test.js"
+      "src/**/*.test.js"
     ]
   }
 }
