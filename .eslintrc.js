@@ -4,12 +4,19 @@ module.exports = {
     'commonjs': true,
   },
   parser: 'babel-eslint',
-  extends: [
-    'eslint:recommended',
-    'plugin:ava/recommended'
-  ],
   plugins: [
-    'ava'
+    'ava',
+    'import',
+    'node',
+    'promise',
+    'filenames'
+  ],
+  extends: [
+    'eslint:all',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:promise/recommended',
+    'plugin:ava/recommended'
   ],
   rules: {
     'indent': ['error', 2],
@@ -17,6 +24,8 @@ module.exports = {
     'semi': ['error','never'],
     'no-var': 'error',
     'one-var': 'off',
-    'no-console': 'warn'
+    'no-console': 'warn',
+    'filenames/match-exported': ['error', 'kebab'],
+    'filenames/no-index': 'off',
   }
 }
