@@ -1,6 +1,6 @@
 {
   "name": "search-word-docs",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Search and find text in multiple Microsoft Word documents",
   "main": "index.js",
   "scripts": {
