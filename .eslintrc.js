@@ -3,7 +3,6 @@ module.exports = {
     'node': true,
     'commonjs': true,
   },
-  parser: 'babel-eslint',
   plugins: [
     'ava',
     'import',
