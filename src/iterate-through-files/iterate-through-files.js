@@ -1,10 +1,9 @@
 import fs from 'fs'
 import pathTool from 'path'
 
-import searchFile from '../search-file'
-import searchOlderFileTypes from '../search-older-file-types'
+import textSearch from '../text-search'
 import findFiles from '../find-files'
-import { searchTerms, filter } from '../get_variables'
+import { filter } from '../get_variables'
 
 const iterateThroughFiles = async ({files, path, fileList}) => {
   
@@ -14,18 +13,18 @@ const iterateThroughFiles = async ({files, path, fileList}) => {
     const isADirectory = fs.lstatSync(filename).isDirectory()
     
     if (isADirectory){
-      await findFiles({searchTerms, path: filename, filter, fileList}) // recurs
+      await findFiles({path: filename, fileList}) // recurs
     }
     else if (filename.indexOf(filter)>=0) {
       try {
-        const found = await searchFile({searchTerms, file: `./${filename}`})
+        const found = await textSearch({file: `./${filename}`})
         if (found) {
           fileList.push(found)
         }
       }
       catch (error) {
         if(error === 'unreadable') {
-          const found = await searchOlderFileTypes({searchTerms, file: `./${filename}`})
+          const found = await textSearch.older({file: `./${filename}`})
           
           if (found) {
             fileList.push(found)
