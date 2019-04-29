@@ -23,13 +23,7 @@ const iterateThroughFiles = async ({files, path, fileList}) => {
         }
       }
       catch (error) {
-        if(error === 'unreadable') {
-          const found = await textSearch.older({file: `./${filename}`})
-          
-          if (found) {
-            fileList.push(found)
-          }
-        }
+        return error
       }
     }
   }
