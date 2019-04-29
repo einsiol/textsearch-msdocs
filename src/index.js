@@ -3,25 +3,20 @@ import findFiles from './find-files'
 
 const argv = minimist(JSON.parse(process.env.npm_config_argv).original)
 
-const {'_': terms, dir = './'} = argv
+const {_: searchTerms, dir = './'} = argv
 
 const runProgram = async ({searchTerms, filter, path}) => {
-
   try {
-
     const fileList = []
 
-    await findFiles({fileList, filter, path, searchTerms})
+    await findFiles({searchTerms, path, filter, fileList})
     return fileList
 
-  } catch (error) {
-
-    return error
-
   }
-
+  catch (error) {
+    return error
+  }
 }
 
-runProgram({terms, path: dir, filter: '.doc'})
-  .then(result => console.log(result))
-  .catch(error => console.log(error))
+runProgram({searchTerms, path: dir, filter: '.doc'})
+  .then((result) => console.log(result))
