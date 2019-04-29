@@ -1,12 +1,12 @@
 import findFiles from './find-files'
 import { dir as path} from './get_variables'
 
-const runProgram = async () => {
+const searchForFiles = async () => {
   try {
-    const fileList = []
+    const filesFound = []
 
-    await findFiles({path, fileList})
-    return fileList
+    await findFiles({path, filesFound})
+    return filesFound
 
   }
   catch (error) {
@@ -14,5 +14,5 @@ const runProgram = async () => {
   }
 }
 
-runProgram()
+searchForFiles()
   .then((result) => console.log(result))

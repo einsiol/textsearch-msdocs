@@ -5,7 +5,7 @@ import textSearch from '../text-search'
 import findFiles from '../find-files'
 import { filter } from '../get_variables'
 
-const iterateThroughFiles = async ({files, path, fileList}) => {
+const iterateThroughFiles = async ({files, path, filesFound}) => {
   
   for (let i in files) {
     const file = files[i]
@@ -13,13 +13,13 @@ const iterateThroughFiles = async ({files, path, fileList}) => {
     const isADirectory = fs.lstatSync(filename).isDirectory()
     
     if (isADirectory){
-      await findFiles({path: filename, fileList}) // recurs
+      await findFiles({path: filename, filesFound}) // recurs
     }
     else if (filename.indexOf(filter)>=0) {
       try {
         const found = await textSearch({file: `./${filename}`})
         if (found) {
-          fileList.push(found)
+          filesFound.push(found)
         }
       }
       catch (error) {
