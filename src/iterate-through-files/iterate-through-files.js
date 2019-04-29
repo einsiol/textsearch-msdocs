@@ -4,15 +4,16 @@ import pathTool from 'path'
 import searchFile from '../search-file'
 import searchOlderFileTypes from '../search-older-file-types'
 import findFiles from '../find-files'
+import { searchTerms, filter } from '../get_variables'
 
-const iterateThroughFiles = async ({searchTerms, files, filter, path, fileList}) => {
+const iterateThroughFiles = async ({files, path, fileList}) => {
   
   for (let i in files) {
     const file = files[i]
     const filename = pathTool.join(path, file)
-    const isItADirectory = fs.lstatSync(filename).isDirectory()
+    const isADirectory = fs.lstatSync(filename).isDirectory()
     
-    if (isItADirectory){
+    if (isADirectory){
       await findFiles({searchTerms, path: filename, filter, fileList}) // recurs
     }
     else if (filename.indexOf(filter)>=0) {

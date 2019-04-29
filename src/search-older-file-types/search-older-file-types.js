@@ -1,7 +1,8 @@
 import WordExtractor from 'word-extractor'
 import selector from '../selector'
+import { searchTerms, dir as path, filter } from '../get_variables'
 
-const searchOlderFileTypes = async ({searchTerms, file}) => {
+const searchOlderFileTypes = async ({file}) => {
   const extractor = new WordExtractor()
   const extracted = await extractor.extract(file)
   try {
