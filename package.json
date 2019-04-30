@@ -2,17 +2,14 @@
   "name": "search-word-docs",
   "version": "0.0.6",
   "description": "Search and find text in multiple Microsoft Word documents",
-  "main": "index.js",
-  "scripts": {
-    "start": "babel src -d build && node build/index.js",
-    "build": "babel src -d build",
-    "test": "npx ava",
-    "lint": "eslint . --cache"
-  },
   "author": "Einar Olafsson",
   "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/einsiol/textsearch-msdocs"
+  },
+  "main": "build/index.js",
   "dependencies": {
-    "docx4js": "^3.1.30",
     "minimist": "^1.2.0",
     "textract": "^2.4.0",
     "word-extractor": "^0.3.0"
@@ -22,19 +19,22 @@
     "@babel/core": "^7.4.4",
     "@babel/plugin-transform-modules-commonjs": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
-    "@babel/preset-es2015": "^7.0.0-beta.53",
     "@babel/register": "^7.4.4",
     "ava": "1.4.1",
     "babel-minify": "^0.5.0",
     "babel-preset-minify": "^0.5.0",
     "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-ava": "^6.0.0",
+    "eslint-plugin-filenames": "^1.3.2",
     "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-react": "^7.12.4"
+    "eslint-plugin-promise": "^4.1.1"
+  },
+  "scripts": {
+    "start": "babel src -d build && node build/index.js",
+    "build": "babel src -d build",
+    "test": "npx ava",
+    "lint": "eslint . --cache"
   },
   "ava": {
     "require": [

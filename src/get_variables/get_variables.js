@@ -1,5 +1,11 @@
 import minimist from 'minimist'
 
-const {_: searchTerms, dir = './', filter = '.doc'} = minimist(process.argv.slice(2))
+const [,, ...argv] = process.argv
+
+const {
+  '_': searchTerms,
+  dir = './',
+  filter = '.doc'
+} = minimist(argv)
 
 export { searchTerms, dir, filter }

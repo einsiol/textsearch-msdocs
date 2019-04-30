@@ -9,12 +9,12 @@ import searchOlderFileTypes from './search-older-file-types'
 
 const fromFileWithPath = util.promisify(textract.fromFileWithPath)
 
-const searchFile = async ({file}) => {
+const textSearch = async ({ file }) => {
   try {
     const text = await fromFileWithPath(file)
 
-    return selector({searchTerms, text}) ? file : null
-  } 
+    return selector({ searchTerms, text }) ? file : null
+  }
   catch (error) {
     const oldFile = await searchOlderFileTypes(file)
 
@@ -22,4 +22,4 @@ const searchFile = async ({file}) => {
   }
 }
 
-export default searchFile
+export default textSearch
