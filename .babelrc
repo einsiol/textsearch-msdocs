@@ -5,5 +5,9 @@
         "node": "current"
       }
     }],
+    ["minify"]
+  ],
+  "ignore": [
+    "**/*.test.js"
   ]
 }
