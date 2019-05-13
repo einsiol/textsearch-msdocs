@@ -1,22 +1,19 @@
-import minimist from 'minimist'
-import findFiles from './findFiles/find-files'
+import findFiles from './find-files'
+import { dir as path } from './get_variables'
 
-const argv = minimist(JSON.parse(process.env.npm_config_argv).original)
-
-const {_: searchTerms, dir = './'} = argv
-
-const runProgram = async ({searchTerms, filter, path}) => {
+const searchForFiles = async () => {
   try {
-    const fileList = []
+    const filesFound = []
 
-    await findFiles({searchTerms, path, filter, fileList})
-    return fileList
+    await findFiles({ filesFound, path })
 
+    return filesFound
   }
   catch (error) {
     return error
   }
 }
 
-runProgram({searchTerms, path: dir, filter: '.doc'})
-  .then((result) => console.log(result))
+searchForFiles()
+  .then(result => console.log(result))
+  .catch(error => console.error(error))

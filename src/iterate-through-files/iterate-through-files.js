@@ -1,37 +1,35 @@
 import fs from 'fs'
 import pathTool from 'path'
 
-import searchFile from '../search-file'
-import searchOlderFileTypes from '../search-older-file-types'
+import textSearch from '../text-search'
+import { filter } from '../get_variables'
 
-const iterateThroughFiles = async ({searchTerms, files, filter, path, fileList, callBack}) => {
-  
-  for (let i = 0; files.length > i; i++) {
+const iterateThroughFiles = async ({ files, path, filesFound, findFiles }) => {
+  for (let i in files) {
     const file = files[i]
     const filename = pathTool.join(path, file)
-    const isItADirectory = fs.lstatSync(filename).isDirectory()
-    
-    if (isItADirectory){
-      await callBack({searchTerms, path: filename, filter, fileList}) // recurs
-    }
-    else if (filename.indexOf(filter)>=0) {
-      try {
-        const found = await searchFile({searchTerms, file: `./${filename}`})
+    const isADirectory = fs.lstatSync(filename).isDirectory()
+
+    try {
+      if (isADirectory) {
+        await findFiles({ filesFound, path: filename })
+      }
+      else if (filename.indexOf(filter) >= 0) {
+        const found = await textSearch({ file: `./${filename}` })
+
         if (found) {
-          fileList.push(found)
+          return filesFound.push(found)
         }
+
+        return null
       }
-      catch (error) {
-        if(error === 'unreadable') {
-          const found = await searchOlderFileTypes({searchTerms, file: `./${filename}`})
-          
-          if (found) {
-            fileList.push(found)
-          }
-        }
-      }
+    }
+    catch (error) {
+      return error
     }
   }
+
+  return null
 }
 
 export default iterateThroughFiles

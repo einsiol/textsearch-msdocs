@@ -4,12 +4,10 @@
       "targets": {
         "node": "current"
       }
-    }]
+    }],
+    ["minify"]
   ],
-  "env": {
-    "production": {
-      "presets": ["minify"]
-    }
-  },
-  "plugins": ["transform-es2015-modules-commonjs"]
+  "ignore": [
+    "**/*.test.js"
+  ]
 }
